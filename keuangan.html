@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keuangan — Personal Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Plus+Jakarta+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { theme: { extend: {
+            fontFamily: { fredoka: ['Fredoka','sans-serif'], sans: ['Plus Jakarta Sans','sans-serif'] },
+            colors: { lavender: {50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',bg:'#E2D9F3',sidebar:'#A084DC'}, peach: {light:'#FFD8CC',DEFAULT:'#FFB3B3',dark:'#FF9999'} }
+        }}}
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-slate-700 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+
+    <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-6 items-stretch">
+        <div id="sidebar-container"></div>
+
+        <main class="flex-grow clay-bg p-5 md:p-8 min-h-[500px] md:min-h-[750px] flex flex-col justify-between relative overflow-hidden">
+            <header class="flex justify-between items-center mb-6 relative z-10">
+                <div class="flex flex-col">
+                    <h1 class="font-fredoka text-3xl font-bold text-lavender-600 tracking-wide">Keuangan Pribadi</h1>
+                    <p class="text-xs text-slate-500 mt-0.5">Rencanakan, catat, dan pantau pengeluaran Anda dengan bijak.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleGeminiKeyModal()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-md border border-white/40 text-lavender-500 transition-transform hover:scale-105"><i data-lucide="settings" class="w-5 h-5"></i></button>
+                    <div class="w-10 h-10 rounded-full overflow-hidden border border-white shadow-md"><img id="header-avatar" src="" alt="Avatar" class="w-full h-full object-cover"></div>
+                </div>
+            </header>
+
+            <div class="flex-grow flex flex-col gap-6 relative z-10">
+
+                <!-- Top Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="clay-card-inner p-5 bg-gradient-to-br from-lavender-100/50 to-white flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-lavender-500 shadow-md"><i data-lucide="wallet" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400">Total Saldo</span>
+                            <span class="font-fredoka text-xl font-bold text-slate-800" id="keu-saldo-total">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="clay-card-inner p-5 bg-gradient-to-br from-emerald-50/50 to-white flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-emerald-500 shadow-md"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400">Pemasukan Bulan Ini</span>
+                            <span class="font-fredoka text-xl font-bold text-emerald-600" id="keu-saldo-pemasukan">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="clay-card-inner p-5 bg-gradient-to-br from-red-50/50 to-white flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-red-500 shadow-md"><i data-lucide="trending-down" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400">Pengeluaran Bulan Ini</span>
+                            <span class="font-fredoka text-xl font-bold text-red-500" id="keu-saldo-pengeluaran">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Add Transaction Form -->
+                    <div class="clay-card-inner p-5 lg:col-span-5">
+                        <h4 class="font-fredoka text-md font-bold text-slate-700 mb-3">Tambah Transaksi Baru</h4>
+                        <form id="keuangan-form" onsubmit="addTransactionEvent(event)" class="space-y-3.5">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold uppercase text-slate-400">Deskripsi Transaksi</label>
+                                <input type="text" id="keu-deskripsi" required placeholder="Contoh: Gaji bulanan, beli kopi" class="text-xs px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-lavender-300">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-[10px] font-bold uppercase text-slate-400">Jumlah (Rp)</label>
+                                    <input type="number" id="keu-jumlah" required placeholder="Contoh: 50000" class="text-xs px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-lavender-300">
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="text-[10px] font-bold uppercase text-slate-400">Tipe</label>
+                                    <select id="keu-tipe" class="text-xs px-3.5 py-2.5 rounded-xl border border-slate-100 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-lavender-300">
+                                        <option value="pemasukan">📈 Pemasukan</option>
+                                        <option value="pengeluaran">📉 Pengeluaran</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 text-white font-fredoka font-bold text-xs rounded-xl clay-btn mt-2">Simpan Transaksi</button>
+                        </form>
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="clay-card-inner p-5 lg:col-span-7 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-fredoka text-md font-bold text-slate-700">Riwayat Catatan Keuangan</h4>
+                                <span class="text-[10px] text-slate-400 italic">Database: Sheets (Mock)</span>
+                            </div>
+                            <div class="clay-inset p-2 max-h-[220px] overflow-y-auto space-y-2.5" id="keuangan-list">
+                                <!-- Rendered by keuangan.js -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer class="mt-8 pt-4 border-t border-lavender-100 flex flex-col md:flex-row justify-between items-center text-center gap-2 relative z-10">
+                <p id="footer-secret-trigger" class="text-[10px] text-slate-400 cursor-pointer hover:text-lavender-500 transition-colors select-none font-medium">Powered by GitHub Pages | Image Hosting: lh3.googleusercontent.com | Database: Google Sheets API</p>
+                <div class="flex gap-4 text-[10px] text-slate-400 font-medium"><span>Versi 2.5</span><span>&copy; 2026 Arissa Putri. All rights reserved.</span></div>
+            </footer>
+        </main>
+    </div>
+
+    <div id="modals-container"></div>
+    <div id="mobile-nav-container"></div>
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900/80 text-white text-xs px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border border-white/10 hidden items-center gap-2"><i data-lucide="info" class="w-4 h-4 text-peach-light"></i><span id="toast-message"></span></div>
+
+    <script>window.PAGE_ID = 'keuangan';</script>
+    <script src="js/app.js"></script>
+    <script src="js/keuangan.js"></script>
+</body>
+</html>

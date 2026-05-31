@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Personal Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Plus+Jakarta+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { fredoka: ['Fredoka','sans-serif'], sans: ['Plus Jakarta Sans','sans-serif'] },
+                    colors: {
+                        lavender: { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',bg:'#E2D9F3',sidebar:'#A084DC' },
+                        peach: { light:'#FFD8CC', DEFAULT:'#FFB3B3', dark:'#FF9999' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-slate-700 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+
+    <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-6 items-stretch">
+
+        <!-- Sidebar placeholder (rendered by app.js) -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="flex-grow clay-bg p-5 md:p-8 min-h-[500px] md:min-h-[750px] flex flex-col justify-between relative overflow-hidden">
+
+            <header class="flex justify-between items-center mb-6 relative z-10">
+                <div class="flex flex-col">
+                    <h1 class="font-fredoka text-3xl font-bold text-lavender-600 tracking-wide">Dashboard</h1>
+                    <p class="text-xs text-slate-500 mt-0.5">Selamat datang kembali! Ini rangkuman harian Anda.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleGeminiKeyModal()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-md border border-white/40 text-lavender-500 relative transition-transform hover:scale-105" title="Konfigurasi API Gemini">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                    <div class="w-10 h-10 rounded-full overflow-hidden border border-white shadow-md">
+                        <img id="header-avatar" src="" alt="Avatar" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <div class="flex-grow flex flex-col gap-6 relative z-10">
+
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-lavender-200/50 to-peach-light/40 p-6 rounded-3xl border border-white/50 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-col text-center md:text-left">
+                        <h3 class="font-fredoka text-xl md:text-2xl font-bold text-slate-800" id="welcome-greeting">Selamat Pagi, Kak! 🌟</h3>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1 max-w-md">Kunci kesuksesan hari ini ada di konsistensi Anda. Mari buat hari ini produktif, seimbang, dan menginspirasi!</p>
+                    </div>
+                    <a href="ai.html" class="clay-btn px-5 py-2.5 rounded-2xl text-xs font-fredoka font-bold text-white flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> Tanya AI Asisten
+                    </a>
+                </div>
+
+                <!-- Statistics Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="clay-card-3d-purple p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                        <div class="w-11 h-11 rounded-2xl puffy-icon-purple flex items-center justify-center text-lavender-600 shadow-sm mb-1"><i data-lucide="wallet" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Pemasukan</span>
+                            <span class="font-fredoka text-xl lg:text-2xl font-bold text-lavender-600 mt-0.5" id="dash-pemasukan">Rp 0</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2.5 py-0.5 rounded-full mt-1 border border-emerald-100">+18% bulan ini</span>
+                    </div>
+                    <div class="clay-card-3d-pink p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                        <div class="w-11 h-11 rounded-2xl puffy-icon-pink flex items-center justify-center text-peach-dark shadow-sm mb-1"><i data-lucide="arrow-down-right" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Pengeluaran</span>
+                            <span class="font-fredoka text-xl lg:text-2xl font-bold text-red-400 mt-0.5" id="dash-pengeluaran">Rp 0</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-red-500 bg-red-50 px-2.5 py-0.5 rounded-full mt-1 border border-red-100">-3.2% minggu ini</span>
+                    </div>
+                    <div class="clay-card-3d-yellow p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                        <div class="w-11 h-11 rounded-2xl puffy-icon-yellow flex items-center justify-center text-amber-600 shadow-sm mb-1"><i data-lucide="users" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Total Relasi</span>
+                            <span class="font-fredoka text-xl lg:text-2xl font-bold text-amber-600 mt-0.5" id="dash-relasi">0 Orang</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full mt-1 border border-amber-100">+2 relasi baru</span>
+                    </div>
+                    <div class="clay-card-3d-blue p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                        <div class="w-11 h-11 rounded-2xl puffy-icon-blue flex items-center justify-center text-sky-600 shadow-sm mb-1"><i data-lucide="qr-code" class="w-6 h-6"></i></div>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">Scanner Aktif</span>
+                            <span class="font-fredoka text-xl lg:text-2xl font-bold text-sky-600 mt-0.5">Online</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-full mt-1 border border-sky-100">Siap dipindai</span>
+                    </div>
+                </div>
+
+                <!-- Calendar & Quick Todo -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="clay-card-inner p-5 lg:col-span-6 flex flex-col justify-between min-h-[300px]">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-fredoka text-md font-bold text-slate-700">Kalender Kegiatan</h4>
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-lavender-600 bg-lavender-50 px-2 py-1 rounded-xl border border-lavender-100">
+                                    <button onclick="changeMonth(-1)" class="p-1 hover:bg-lavender-200/50 rounded-lg transition-colors"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                    <span id="calendar-month-year" class="font-fredoka min-w-[80px] text-center">Mei 2026</span>
+                                    <button onclick="changeMonth(1)" class="p-1 hover:bg-lavender-200/50 rounded-lg transition-colors"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-slate-400 mb-2 uppercase tracking-wider">
+                                <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+                            </div>
+                            <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
+                        </div>
+                    </div>
+                    <div class="clay-card-inner p-5 lg:col-span-6 flex flex-col justify-between min-h-[300px]">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-fredoka text-md font-bold text-slate-700">Tugas Hari Ini</h4>
+                                <a href="todo.html" class="text-xs text-lavender-600 hover:underline font-bold flex items-center gap-1">Kelola <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                            </div>
+                            <div class="clay-inset p-3 space-y-2.5 max-h-[175px] overflow-y-auto" id="dashboard-todo-list"></div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center text-xs text-slate-500 font-bold px-1">
+                            <span id="dash-todo-completed-stats">0 dari 0 tugas selesai</span>
+                            <div class="w-28 bg-lavender-100 rounded-full h-2 overflow-hidden shadow-inner border border-white">
+                                <div id="dash-todo-progress-bar" class="bg-gradient-to-r from-lavender-sidebar to-peach h-full rounded-full transition-all duration-500" style="width:0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Chart & Agenda -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="clay-card-inner p-5 lg:col-span-7">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-fredoka text-md font-bold text-slate-700">Ringkasan Aktivitas Relasi</h4>
+                            <span class="text-xs font-semibold px-2 py-0.5 bg-lavender-100 text-lavender-600 rounded-full">Minggu Ini</span>
+                        </div>
+                        <div class="clay-inset p-4 h-48 flex items-end justify-between gap-2">
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-lavender-400/80 hover:bg-lavender-400 rounded-t-xl transition-all shadow-md" style="height:40%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Sen</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-peach/80 hover:bg-peach rounded-t-xl transition-all shadow-md" style="height:65%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Sel</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-lavender-400/80 hover:bg-lavender-400 rounded-t-xl transition-all shadow-md" style="height:50%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Rab</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-peach/80 hover:bg-peach rounded-t-xl transition-all shadow-md" style="height:85%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Kam</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-lavender-400/80 hover:bg-lavender-400 rounded-t-xl transition-all shadow-md" style="height:95%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Jum</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-peach/80 hover:bg-peach rounded-t-xl transition-all shadow-md" style="height:35%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Sab</span></div>
+                            <div class="flex flex-col items-center flex-grow"><div class="w-8 md:w-10 bg-lavender-300 rounded-t-xl transition-all shadow-md" style="height:20%"></div><span class="text-[10px] font-semibold text-slate-500 mt-2">Min</span></div>
+                        </div>
+                    </div>
+                    <div class="clay-card-inner p-5 lg:col-span-5 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-fredoka text-md font-bold text-slate-700 mb-3">Agenda Terdekat</h4>
+                            <div class="flex flex-col gap-3" id="agenda-list"></div>
+                        </div>
+                        <a href="relasi.html" class="w-full mt-4 py-2 bg-lavender-100 hover:bg-lavender-200/80 text-lavender-600 rounded-xl text-xs font-bold font-fredoka flex items-center justify-center gap-1.5 transition-colors">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Lihat Semua Relasi
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-8 pt-4 border-t border-lavender-100 flex flex-col md:flex-row justify-between items-center text-center gap-2 relative z-10">
+                <p id="footer-secret-trigger" class="text-[10px] text-slate-400 cursor-pointer hover:text-lavender-500 transition-colors select-none font-medium">Powered by GitHub Pages | Image Hosting: lh3.googleusercontent.com | Database: Google Sheets API</p>
+                <div class="flex gap-4 text-[10px] text-slate-400 font-medium"><span>Versi 2.5</span><span>&copy; 2026 Arissa Putri. All rights reserved.</span></div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Shared containers -->
+    <div id="modals-container"></div>
+    <div id="mobile-nav-container"></div>
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900/80 text-white text-xs px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border border-white/10 hidden items-center gap-2 transform transition-all duration-300">
+        <i data-lucide="info" class="w-4 h-4 text-peach-light"></i>
+        <span id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <script>window.PAGE_ID = 'dashboard';</script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant — Personal Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Plus+Jakarta+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { theme: { extend: {
+            fontFamily: { fredoka: ['Fredoka','sans-serif'], sans: ['Plus Jakarta Sans','sans-serif'] },
+            colors: { lavender: {50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',bg:'#E2D9F3',sidebar:'#A084DC'}, peach: {light:'#FFD8CC',DEFAULT:'#FFB3B3',dark:'#FF9999'} }
+        }}}
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans text-slate-700 min-h-screen p-3 md:p-6 flex flex-col justify-between">
+
+    <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-6 items-stretch">
+        <div id="sidebar-container"></div>
+
+        <main class="flex-grow clay-bg p-5 md:p-8 min-h-[500px] md:min-h-[750px] flex flex-col justify-between relative overflow-hidden">
+            <header class="flex justify-between items-center mb-6 relative z-10">
+                <div class="flex flex-col">
+                    <h1 class="font-fredoka text-3xl font-bold text-lavender-600 tracking-wide">Gemini AI Assistant</h1>
+                    <p class="text-xs text-slate-500 mt-0.5">Asisten cerdas terintegrasi siap membantu Anda kapan saja.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleGeminiKeyModal()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-md border border-white/40 text-lavender-500 transition-transform hover:scale-105"><i data-lucide="settings" class="w-5 h-5"></i></button>
+                    <div class="w-10 h-10 rounded-full overflow-hidden border border-white shadow-md"><img id="header-avatar" src="" alt="Avatar" class="w-full h-full object-cover"></div>
+                </div>
+            </header>
+
+            <div class="flex-grow flex flex-col gap-6 relative z-10">
+                <div class="clay-card-inner p-5 flex flex-col flex-grow min-h-[400px] h-full justify-between">
+
+                    <!-- Status Bar -->
+                    <div class="flex items-center justify-between pb-3 border-b border-lavender-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-xs font-bold text-slate-600">AI Assistant Online</span>
+                        </div>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 bg-lavender-100 text-lavender-600 rounded-full">Gemini 2.5 Flash</span>
+                    </div>
+
+                    <!-- Chat Area -->
+                    <div id="ai-chat-area" class="flex-grow my-4 overflow-y-auto space-y-3.5 max-h-[350px] p-2 clay-inset">
+                        <!-- Welcome bubble rendered by ai.js -->
+                    </div>
+
+                    <!-- Preset & Input -->
+                    <div class="flex flex-col gap-3 pt-3 border-t border-lavender-100">
+                        <div class="flex flex-wrap gap-1.5" id="ai-presets">
+                            <button onclick="sendPreset('Analisis pengeluaran keuanganku bulan ini')" class="text-[10px] font-bold px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-100 text-slate-600 rounded-full shadow-sm transition-colors">📈 Analisis Keuangan</button>
+                            <button onclick="sendPreset('Bagaimana cara efisien menyapa relasi baru?')" class="text-[10px] font-bold px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-100 text-slate-600 rounded-full shadow-sm transition-colors">🤝 Tips Relasi</button>
+                            <button onclick="sendPreset('Buatkan 3 agenda menarik untuk networking minggu ini')" class="text-[10px] font-bold px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-100 text-slate-600 rounded-full shadow-sm transition-colors">🗓️ Rekomendasi Agenda</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="ai-chat-input" placeholder="Tulis instruksi atau pertanyaan ke AI..." class="flex-grow text-xs px-4 py-3 rounded-2xl border border-lavender-200 focus:outline-none focus:ring-2 focus:ring-lavender-300 bg-white shadow-inner" onkeydown="if(event.key==='Enter')askAI()">
+                            <button onclick="askAI()" class="clay-btn text-white px-4 py-3 rounded-2xl flex items-center justify-center shadow-md">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="mt-8 pt-4 border-t border-lavender-100 flex flex-col md:flex-row justify-between items-center text-center gap-2 relative z-10">
+                <p id="footer-secret-trigger" class="text-[10px] text-slate-400 cursor-pointer hover:text-lavender-500 transition-colors select-none font-medium">Powered by GitHub Pages | Image Hosting: lh3.googleusercontent.com | Database: Google Sheets API</p>
+                <div class="flex gap-4 text-[10px] text-slate-400 font-medium"><span>Versi 2.5</span><span>&copy; 2026 Arissa Putri. All rights reserved.</span></div>
+            </footer>
+        </main>
+    </div>
+
+    <div id="modals-container"></div>
+    <div id="mobile-nav-container"></div>
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900/80 text-white text-xs px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border border-white/10 hidden items-center gap-2"><i data-lucide="info" class="w-4 h-4 text-peach-light"></i><span id="toast-message"></span></div>
+
+    <script>window.PAGE_ID = 'ai';</script>
+    <script src="js/app.js"></script>
+    <script src="js/ai.js"></script>
+</body>
+</html>

@@ -622,6 +622,12 @@ function initApp() {
     updateSharedUI();
     setupFooterSecret();
     lucide.createIcons();
+    
+    // Munculkan halaman secara halus setelah semua elemen selesai dirender
+    requestAnimationFrame(() => {
+        const shell = document.getElementById('app-shell');
+        if (shell) shell.classList.add('ready');
+    });
 }
 
 // Run immediately (scripts at bottom of body, DOM is ready)

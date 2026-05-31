@@ -242,3 +242,42 @@ textarea:focus {
 .tab-view {
     animation: fadeInUp 0.3s ease-out;
 }
+/* ===================================================
+   FLICKER PREVENTION & LAYOUT STABILITY
+   =================================================== */
+
+/* 1. Sembunyikan app shell secara default, munculkan dengan transisi halus */
+.app-shell {
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+.app-shell.ready {
+    opacity: 1;
+}
+
+/* 2. Cadangkan ruang layout sebelum JS merender Sidebar (mencegah lompatan konten) */
+#sidebar-container {
+    flex-shrink: 0;
+}
+@media (min-width: 768px) {
+    #sidebar-container {
+        width: 288px; /* Equivalent to Tailwind w-72 */
+    }
+}
+
+/* 3. Tambahkan padding bawah di mobile agar konten tidak tertutup Mobile Nav */
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 80px !important;
+    }
+}
+
+/* 4. Mencegah ikon Lucide "snap" (loncat) sebelum JS merender SVG-nya */
+i[data-lucide] {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    min-width: 16px;
+    min-height: 16px;
+    vertical-align: middle;
+}
